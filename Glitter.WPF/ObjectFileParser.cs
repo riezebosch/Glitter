@@ -108,24 +108,39 @@ namespace Glitter.WPF
 
         private static string ReadTree(Stream s, ObjectHeader header)
         {
-
-            return ReadTreeLine(s, header);
-        }
-        private static string ReadTreeLine(Stream s, ObjectHeader header)
-        {
             var sb = new StringBuilder();
-            while (s.Position < header.Size)
+            //while (s.Position < header.Size)
+            //{
+            //    var bytes = new List<byte>();
+            //    int b;
+
+            //    while ((b = s.ReadByte()) != '\0' && b != -1)
+            //    {
+            //        bytes.Add((byte)b);
+            //    }
+
+            //    sb.AppendFormat("{0} {1}", ASCIIEncoding.ASCII.GetString(bytes.ToArray()), ReadTreeLineFileRef(s));
+            //    sb.AppendLine();
+            //}
+
+            int fragment = 0;
+            var bytes = new List<byte>();
+
+            for (int i = 0; i < header.Size; i++)
             {
-                var bytes = new List<byte>();
                 int b;
 
-                while ((b = s.ReadByte()) != '\0' && b != -1)
+                while ((b = s.ReadByte()) != '\0' && b > 0)
                 {
-                    bytes.Add((byte)b);
+                    sb.Append((char)b);
                 }
 
-                sb.AppendFormat("{0} {1}", ASCIIEncoding.ASCII.GetString(bytes.ToArray()), ReadTreeLineFileRef(s));
-                sb.AppendLine();
+                sb.Append(' ');
+
+                for (int j = 0; j < 20 && i < header.Size; j++, i++)
+                {
+                    sb.Append(s.ReadByte().ToString("x2"));
+                }
             }
 
             return sb.ToString();

@@ -16,5 +16,4 @@ C:\git\Glitter\Glitter.WPF\bin\Debug\System.Windows.Interactivity.xml
 C:\git\Glitter\Glitter.WPF\obj\Debug\Glitter.WPF.exe
 C:\git\Glitter\Glitter.WPF\obj\Debug\Glitter.WPF.pdb
 C:\git\Glitter\Glitter.WPF\bin\Debug\Ionic.Zip.dll
-C:\git\Glitter\Glitter.WPF\bin\Debug\Ionic.Zip.xml
 C:\git\Glitter\Glitter.WPF\obj\Debug\Glitter.WPF.csprojResolveAssemblyReference.cache

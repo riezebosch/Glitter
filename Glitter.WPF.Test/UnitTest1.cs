@@ -27,5 +27,12 @@ namespace Glitter.WPF.Test
                 Assert.AreEqual(112, result.Size);
             }
         }
+
+        [TestMethod]
+        public void SingleFileInTreeTest()
+        {
+            var result = ObjectFileParser.ParseFile(new System.IO.FileInfo(@"C:\git\demo\.git\objects\89\667aefa8dda468c5892954420831ba50ec366d"));
+            StringAssert.Contains(result, "d0f89fe97552ddd9cefcab879175436503bc9251");
+        }
     }
 }

@@ -90,6 +90,7 @@ namespace Glitter.WPF
         private void allowdrop_Drop(object sender, DragEventArgs e)
         {
             var dir = ExtractRepositoryDirectory(e);
+            Title = dir.FullName;
 
             watcher.Path = dir.FullName;
             watcher.EnableRaisingEvents = true;

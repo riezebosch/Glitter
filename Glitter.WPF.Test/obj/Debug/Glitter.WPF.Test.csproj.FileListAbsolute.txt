@@ -4,6 +4,5 @@ C:\git\Glitter\Glitter.WPF.Test\bin\Debug\Glitter.WPF.Test.pdb
 C:\git\Glitter\Glitter.WPF.Test\bin\Debug\Glitter.WPF.exe
 C:\git\Glitter\Glitter.WPF.Test\bin\Debug\Ionic.Zip.dll
 C:\git\Glitter\Glitter.WPF.Test\bin\Debug\Glitter.WPF.pdb
-C:\git\Glitter\Glitter.WPF.Test\bin\Debug\Ionic.Zip.xml
 C:\git\Glitter\Glitter.WPF.Test\obj\Debug\Glitter.WPF.Test.dll
 C:\git\Glitter\Glitter.WPF.Test\obj\Debug\Glitter.WPF.Test.pdb
