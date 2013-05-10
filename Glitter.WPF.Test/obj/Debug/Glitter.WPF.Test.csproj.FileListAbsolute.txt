@@ -6,3 +6,5 @@ C:\git\Glitter\Glitter.WPF.Test\bin\Debug\Ionic.Zip.dll
 C:\git\Glitter\Glitter.WPF.Test\bin\Debug\Glitter.WPF.pdb
 C:\git\Glitter\Glitter.WPF.Test\obj\Debug\Glitter.WPF.Test.dll
 C:\git\Glitter\Glitter.WPF.Test\obj\Debug\Glitter.WPF.Test.pdb
+C:\git\Glitter\Glitter.WPF.Test\obj\Debug\Glitter.WPF.Test.TestResources.resources
+C:\git\Glitter\Glitter.WPF.Test\obj\Debug\Glitter.WPF.Test.csproj.GenerateResource.Cache

@@ -10,12 +10,12 @@ namespace Glitter.WPF
 {
     public class ObjectFileParser
     {
-        public static string ParseFile(FileInfo fi)
+        public static GitObject ParseFile(FileInfo fi)
         {
             Stream s = null;
             try
             {
-                s = TryOpenFile(fi);
+                s = TryOpenFile(fi, 50);
                 if (fi.Directory.Parent.Name == "objects")
                 {
                     s = new Ionic.Zlib.ZlibStream(s, Ionic.Zlib.CompressionMode.Decompress);
@@ -27,12 +27,12 @@ namespace Glitter.WPF
                     }
                     else
                     {
-                        return ReadFile(s);
+                        return ReadFile(s, header);
                     }
                 }
                 else
                 {
-                    return ReadFile(s);
+                    return ReadFile(s, null);
                 }
             }
             catch (Exception)
@@ -48,7 +48,8 @@ namespace Glitter.WPF
 
             return null;
         }
-        private static FileStream TryOpenFile(FileInfo fi)
+
+        private static FileStream TryOpenFile(FileInfo fi, int retries)
         {
             for (int i = 0; ; i++)
             {
@@ -58,7 +59,7 @@ namespace Glitter.WPF
                 }
                 catch (Exception)
                 {
-                    if (i < 50)
+                    if (i < retries)
                     {
                         Thread.Sleep(500);
                     }
@@ -73,94 +74,86 @@ namespace Glitter.WPF
 
         public static ObjectHeader ReadHeader(Stream stream)
         {
-            var bytes = new List<byte>();
-            byte b;
+            var type = new StringBuilder();
+            var size = new StringBuilder();
+
+            int b;
+            while ((b = (byte)stream.ReadByte()) != ' ')
+            {
+                type.Append((char)b);
+            }
 
             while ((b = (byte)stream.ReadByte()) != '\0')
             {
-                bytes.Add(b);
+                size.Append((char)b);
             }
-
-            string[] parts = ASCIIEncoding.ASCII.GetString(bytes.ToArray()).Split(' ');
 
             return new ObjectHeader
             {
-                Type = (ObjectType)Enum.Parse(typeof(ObjectType), parts[0], true),
-                Size = int.Parse(parts[1])
+                Type = (ObjectType)Enum.Parse(typeof(ObjectType), type.ToString(), true),
+                Size = int.Parse(size.ToString())
             };
         }
-        private static string ReadFile(Stream s)
+
+        public static GitObject ReadFile(Stream s, ObjectHeader header)
         {
-            using (var sr = new StreamReader(s, Encoding.UTF8))
+            StringBuilder sb = new StringBuilder();
+            int b = 0;
+
+            while ((b = s.ReadByte()) > 0)
             {
-                int n = 0;
-                var buffer = new char[1024];
-
-                StringBuilder sb = new StringBuilder();
-                while ((n = sr.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    sb.Append(new string(buffer, 0, n)).Replace('\0', '\r');
-                }
-
-                return sb.ToString();
-            }
-        }
-
-        private static string ReadTree(Stream s, ObjectHeader header)
-        {
-            var sb = new StringBuilder();
-            //while (s.Position < header.Size)
-            //{
-            //    var bytes = new List<byte>();
-            //    int b;
-
-            //    while ((b = s.ReadByte()) != '\0' && b != -1)
-            //    {
-            //        bytes.Add((byte)b);
-            //    }
-
-            //    sb.AppendFormat("{0} {1}", ASCIIEncoding.ASCII.GetString(bytes.ToArray()), ReadTreeLineFileRef(s));
-            //    sb.AppendLine();
-            //}
-
-            int fragment = 0;
-            var bytes = new List<byte>();
-
-            for (int i = 0; i < header.Size; i++)
-            {
-                int b;
-
-                while ((b = s.ReadByte()) != '\0' && b > 0)
+                if (b != '\0')
                 {
                     sb.Append((char)b);
                 }
+                else
+                {
+                    sb.Append(' ');
+                }
+            }
 
+            return new GitObject
+            {
+                Header = header,
+                Body = sb.ToString()
+            };
+        }
+
+        private static GitObject ReadTree(Stream s, ObjectHeader header)
+        {
+            var sb = new StringBuilder();
+
+            // The counter is increased inside the loop
+            // on every read operation.
+            for (int i = 0; i < header.Size; )
+            {
+                // Read the filename and the leading bytes
+                int b;
+                while ((b = s.ReadByte()) != '\0')
+                {
+                    sb.Append((char)b);
+                    i++;
+                }
+
+                // Add a space and increase the counter 
+                // for the \0 that was read
                 sb.Append(' ');
+                i++;
 
+                // Read the SHA1 id of the file or sub tree
                 for (int j = 0; j < 20 && i < header.Size; j++, i++)
                 {
                     sb.Append(s.ReadByte().ToString("x2"));
                 }
+
+                sb.AppendLine();
             }
 
-            return sb.ToString();
-        }
-
-        private static System.String ReadTreeLineFileRef(Stream s)
-        {
-            StringBuilder sb = new StringBuilder();
-            int b;
-            while ((b = s.ReadByte()) != '\0' && b != -1 && b != '\r')
-            {
-                sb.AppendFormat("{0:x}", b);
-            }
-
-            if (b == '\r')
-            {
-                s.ReadByte();
-            }
-
-            return sb.ToString();
+            return new GitObject 
+            { 
+                Header = header, 
+                Body = sb.ToString() 
+            };
         }
     }
 }

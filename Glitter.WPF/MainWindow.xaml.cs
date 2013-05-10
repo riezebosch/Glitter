@@ -47,14 +47,18 @@ namespace Glitter.WPF
                 return;
             }
 
-            Dispatcher.Invoke(() => SP.Children.Add(new TextBlock
+            var obj = ObjectFileParser.ParseFile(fi);
+            if (obj != null)
             {
-                Text = ObjectFileParser.ParseFile(fi) ?? "Error parsing file",
-                Background = new SolidColorBrush(Colors.Green),
-                Foreground = new SolidColorBrush(Colors.White)
-            }));
+                Dispatcher.Invoke(() => SP.Children.Add(new TextBlock
+                    {
+                        Text = obj.Body ?? "Error parsing file",
+                        Background = ToColorBrush(obj.Header),
+                        Foreground = new SolidColorBrush(Colors.White)
+                    }));
 
-            Dispatcher.Invoke(() => SV.ScrollToBottom());
+                Dispatcher.Invoke(() => SV.ScrollToBottom()); 
+            }
         }
 
         
@@ -97,5 +101,26 @@ namespace Glitter.WPF
 
             Banner.Visibility = System.Windows.Visibility.Hidden;
         }
+
+        private static Brush ToColorBrush(ObjectHeader header)
+        {
+            if (header == null)
+            {
+                return new SolidColorBrush(Colors.DarkGray);
+            }
+
+            switch (header.Type)
+            {
+                case ObjectType.Tree:
+                    return new SolidColorBrush(Color.FromRgb(0x70, 0xAD, 0x47));
+                case ObjectType.Blob:
+                    return new SolidColorBrush(Color.FromRgb(0x1B, 0xA1, 0xE2));
+                case ObjectType.Commit:
+                    return new SolidColorBrush(Color.FromRgb(0xED, 0x7D, 0x31));
+                default:
+                    return new SolidColorBrush(Colors.White);
+            }
+        }
+
     }
 }
