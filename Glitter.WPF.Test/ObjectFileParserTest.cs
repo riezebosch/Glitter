@@ -24,10 +24,10 @@ namespace Glitter.WPF.Test
             try
             {
                 var result = ObjectFileParser.ParseFile(file);
-                StringAssert.Contains(result, "b39e4ee91acfd62f10b9b931daed0b0344a438b1");
-                StringAssert.Contains(result, "12c4cf90fa0e83fa111446ef4fedf2fc37e4ebc1");
-                StringAssert.Contains(result, "test.txt");
-                StringAssert.Contains(result, "nog een file.txt");
+                StringAssert.Contains(result.Body, "b39e4ee91acfd62f10b9b931daed0b0344a438b1");
+                StringAssert.Contains(result.Body, "12c4cf90fa0e83fa111446ef4fedf2fc37e4ebc1");
+                StringAssert.Contains(result.Body, "test.txt");
+                StringAssert.Contains(result.Body, "nog een file.txt");
             }
             finally
             {
@@ -74,7 +74,7 @@ namespace Glitter.WPF.Test
             try
             {
                 var result = ObjectFileParser.ParseFile(file);
-                StringAssert.Contains(result, "d0f89fe97552ddd9cefcab879175436503bc9251");
+                StringAssert.Contains(result.Body, "d0f89fe97552ddd9cefcab879175436503bc9251");
             }
             finally
             {
