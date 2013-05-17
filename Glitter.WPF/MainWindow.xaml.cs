@@ -42,6 +42,7 @@ namespace Glitter.WPF
 
             if (fi.Name == "index" ||
                 fi.Extension == ".lock" ||
+                fi.Name.StartsWith("tmp") ||
                 !fi.Exists)
             {
                 return;

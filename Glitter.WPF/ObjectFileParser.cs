@@ -102,14 +102,7 @@ namespace Glitter.WPF
 
             while ((b = s.ReadByte()) > 0)
             {
-                if (b != '\0')
-                {
-                    sb.Append((char)b);
-                }
-                else
-                {
-                    sb.Append(' ');
-                }
+                sb.Append(b != '\0' ? (char)b : ' ');
             }
 
             return new GitObject
@@ -124,7 +117,7 @@ namespace Glitter.WPF
             var sb = new StringBuilder();
 
             // The counter is increased inside the loop
-            // on every read operation.
+            // with every read operation.
             for (int i = 0; i < header.Size; )
             {
                 // Read the filename and the leading bytes
