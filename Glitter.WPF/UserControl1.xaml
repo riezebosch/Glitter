@@ -1,0 +1,38 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	x:Class="Glitter.WPF.UserControl1"
+	x:Name="UserControl"
+    xmlns:l="clr-namespace:Glitter.WPF"
+	d:DesignWidth="640" d:DesignHeight="480" Background="Black">
+	<UserControl.Resources>
+        <l:ColorInverterConverter x:Key="converter" />
+		<Storyboard x:Key="Blink">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Background).(SolidColorBrush.Color)" Storyboard.TargetName="tb">
+				<EasingColorKeyFrame KeyTime="0" Value="{Binding Converter={StaticResource converter}}"/>
+                <EasingColorKeyFrame KeyTime="0:0:0.5" Value="Black"/>
+                <EasingColorKeyFrame KeyTime="0:0:1" Value="{Binding Converter={StaticResource converter}}"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5" Value="Black"/>
+                <EasingColorKeyFrame KeyTime="0:0:2" Value="{Binding Converter={StaticResource converter}}"/>
+			</ColorAnimationUsingKeyFrames>
+		</Storyboard>
+        <Storyboard x:Key="Load">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Background).(SolidColorBrush.Color)" Storyboard.TargetName="tb">
+                <EasingColorKeyFrame KeyTime="0" Value="{Binding Converter={StaticResource converter}}"/>
+        	</ColorAnimationUsingKeyFrames>
+        </Storyboard>
+	</UserControl.Resources>
+	<UserControl.Triggers>
+		<EventTrigger RoutedEvent="FrameworkElement.Loaded">
+			<BeginStoryboard Storyboard="{StaticResource Load}"/>
+		</EventTrigger>
+	</UserControl.Triggers>
+
+    <TextBlock x:Name="tb" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black"
+               Margin="15,0,0,0">
+        <Run Background="White" Text="TextBlock"/>
+    </TextBlock>
+</UserControl>

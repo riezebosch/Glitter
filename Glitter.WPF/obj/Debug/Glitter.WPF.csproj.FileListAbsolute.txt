@@ -10,10 +10,14 @@ C:\git\Glitter\Glitter.WPF\bin\Debug\Glitter.WPF.exe
 C:\git\Glitter\Glitter.WPF\bin\Debug\Glitter.WPF.pdb
 C:\git\Glitter\Glitter.WPF\bin\Debug\Caliburn.Micro.dll
 C:\git\Glitter\Glitter.WPF\bin\Debug\System.Windows.Interactivity.dll
-C:\git\Glitter\Glitter.WPF\bin\Debug\Caliburn.Micro.pdb
-C:\git\Glitter\Glitter.WPF\bin\Debug\Caliburn.Micro.xml
-C:\git\Glitter\Glitter.WPF\bin\Debug\System.Windows.Interactivity.xml
 C:\git\Glitter\Glitter.WPF\obj\Debug\Glitter.WPF.exe
 C:\git\Glitter\Glitter.WPF\obj\Debug\Glitter.WPF.pdb
 C:\git\Glitter\Glitter.WPF\bin\Debug\Ionic.Zip.dll
 C:\git\Glitter\Glitter.WPF\obj\Debug\Glitter.WPF.csprojResolveAssemblyReference.cache
+C:\git\Glitter\Glitter.WPF\obj\Debug\UserControl1.baml
+C:\git\Glitter\Glitter.WPF\obj\Debug\UserControl1.g.cs
+C:\git\Glitter\Glitter.WPF\bin\Debug\Caliburn.Micro.pdb
+C:\git\Glitter\Glitter.WPF\bin\Debug\Caliburn.Micro.xml
+C:\git\Glitter\Glitter.WPF\bin\Debug\System.Windows.Interactivity.xml
+C:\git\Glitter\Glitter.WPF\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\git\Glitter\Glitter.WPF\obj\Debug\Glitter.WPF_MarkupCompile.lref

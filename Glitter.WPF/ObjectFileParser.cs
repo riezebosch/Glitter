@@ -21,18 +21,20 @@ namespace Glitter.WPF
                     s = new Ionic.Zlib.ZlibStream(s, Ionic.Zlib.CompressionMode.Decompress);
 
                     var header = ReadHeader(s);
-                    if (header.Type == ObjectType.Tree)
+                    return new GitObject
                     {
-                        return ReadTree(s, header);
-                    }
-                    else
-                    {
-                        return ReadFile(s, header);
-                    }
+                        Header = header,
+                        Body = ReadBody(fi, s, header),
+                        Id = fi.Directory.Name + fi.Name
+                    };
+
                 }
                 else
                 {
-                    return ReadFile(s, null);
+                    return new GitObject
+                    {
+                        Body = ReadFile(s)
+                    };
                 }
             }
             catch (Exception)
@@ -95,7 +97,19 @@ namespace Glitter.WPF
             };
         }
 
-        public static GitObject ReadFile(Stream s, ObjectHeader header)
+        private static string ReadBody(FileInfo fi, Stream s, ObjectHeader header)
+        {
+            if (header.Type == ObjectType.Tree)
+            {
+                return ReadTree(s, header);
+            }
+            else
+            {
+                return ReadFile(s);
+            }
+        }
+
+        public static string ReadFile(Stream s)
         {
             StringBuilder sb = new StringBuilder();
             int b = 0;
@@ -105,14 +119,10 @@ namespace Glitter.WPF
                 sb.Append(b != '\0' ? (char)b : ' ');
             }
 
-            return new GitObject
-            {
-                Header = header,
-                Body = sb.ToString()
-            };
+            return sb.ToString();
         }
 
-        private static GitObject ReadTree(Stream s, ObjectHeader header)
+        private static string ReadTree(Stream s, ObjectHeader header)
         {
             var sb = new StringBuilder();
 
@@ -142,11 +152,7 @@ namespace Glitter.WPF
                 sb.AppendLine();
             }
 
-            return new GitObject 
-            { 
-                Header = header, 
-                Body = sb.ToString() 
-            };
+            return sb.ToString();
         }
     }
 }

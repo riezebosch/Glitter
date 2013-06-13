@@ -8,6 +8,7 @@ namespace Glitter.WPF
 {
     public class GitObject
     {
+        public string Id { get; set; }
         public ObjectHeader Header { get; set; }
         public string Body { get; set; }
     }

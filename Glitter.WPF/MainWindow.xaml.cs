@@ -22,7 +22,6 @@ namespace Glitter.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        private char[] delimiters = new[] { ' ', '\t', '\0', '\r', '\n' };
         FileSystemWatcher watcher = new FileSystemWatcher();
 
         public MainWindow()
@@ -53,39 +52,24 @@ namespace Glitter.WPF
             if (obj != null)
             {
                 Dispatcher.Invoke(() =>
+                {
+                    var tb = new UserControl1()
                     {
-                        
-                        {
-                            var tb = new TextBlock() { Text = obj.Body ?? "Error parsing file", Background = ToColorBrush(obj.Header), Foreground = new SolidColorBrush(Colors.White) };
-                            tb.MouseLeftButtonDown += (o, ed) =>
-                                {
-                                    var pos = tb.GetPositionFromPoint(ed.GetPosition(tb), false);
-                                    string text = pos.GetTextInRun(LogicalDirection.Backward);
-                                    int textLastIndexOfAny = text.LastIndexOfAny(delimiters);
-                                    if (textLastIndexOfAny > 0)
-                                    {
-                                        text = text.Substring(textLastIndexOfAny);
-                                    }
+                        Text = obj.Body ?? "Error parsing file",
+                        Background = ToColorBrush(obj.Header),
+                        Foreground = new SolidColorBrush(Colors.White),
+                        DataContext = obj
+                    };
+                    tb.IdentifierClick += (o, id) => SP.Children.OfType<UserControl1>().Where(t => t.DataContext is GitObject).Where(t => ((GitObject)t.DataContext).Id == id).ToList().ForEach(t => t.Blink());
+                    SP.Children.Add(tb);
+                });
 
-                                    string right = pos.GetTextInRun(LogicalDirection.Forward);
-                                    int rightIndexOfAny = right.IndexOfAny(delimiters);
-                                    if (rightIndexOfAny > 0)
-                                    {
-                                        right = right.Substring(0, rightIndexOfAny); 
-                                    }
 
-                                    MessageBox.Show(text + right);
-                                };
-                            SP.Children.Add(tb);
-                        }
-                    });
-                        
-
-                Dispatcher.Invoke(() => SV.ScrollToBottom()); 
+                Dispatcher.Invoke(() => SV.ScrollToBottom());
             }
         }
 
-        
+
 
         private void allowdrop_DragEnter(object sender, DragEventArgs e)
         {
