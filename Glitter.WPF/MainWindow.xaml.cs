@@ -22,6 +22,7 @@ namespace Glitter.WPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        private char[] delimiters = new[] { ' ', '\t', '\0', '\r', '\n' };
         FileSystemWatcher watcher = new FileSystemWatcher();
 
         public MainWindow()
@@ -51,12 +52,34 @@ namespace Glitter.WPF
             var obj = ObjectFileParser.ParseFile(fi);
             if (obj != null)
             {
-                Dispatcher.Invoke(() => SP.Children.Add(new TextBlock
+                Dispatcher.Invoke(() =>
                     {
-                        Text = obj.Body ?? "Error parsing file",
-                        Background = ToColorBrush(obj.Header),
-                        Foreground = new SolidColorBrush(Colors.White)
-                    }));
+                        
+                        {
+                            var tb = new TextBlock() { Text = obj.Body ?? "Error parsing file", Background = ToColorBrush(obj.Header), Foreground = new SolidColorBrush(Colors.White) };
+                            tb.MouseLeftButtonDown += (o, ed) =>
+                                {
+                                    var pos = tb.GetPositionFromPoint(ed.GetPosition(tb), false);
+                                    string text = pos.GetTextInRun(LogicalDirection.Backward);
+                                    int textLastIndexOfAny = text.LastIndexOfAny(delimiters);
+                                    if (textLastIndexOfAny > 0)
+                                    {
+                                        text = text.Substring(textLastIndexOfAny);
+                                    }
+
+                                    string right = pos.GetTextInRun(LogicalDirection.Forward);
+                                    int rightIndexOfAny = right.IndexOfAny(delimiters);
+                                    if (rightIndexOfAny > 0)
+                                    {
+                                        right = right.Substring(0, rightIndexOfAny); 
+                                    }
+
+                                    MessageBox.Show(text + right);
+                                };
+                            SP.Children.Add(tb);
+                        }
+                    });
+                        
 
                 Dispatcher.Invoke(() => SV.ScrollToBottom()); 
             }
