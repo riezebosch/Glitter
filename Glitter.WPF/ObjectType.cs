@@ -10,7 +10,12 @@ namespace Glitter.WPF
     {
         Tree,
         Blob,
-        Commit
+        Commit,
+        Branch,
+        Pack,
+        Info,
+        Index,
+        Head
     }
 
 }

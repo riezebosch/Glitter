@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Glitter.WPF
 {
@@ -12,29 +13,46 @@ namespace Glitter.WPF
     {
         public static GitObject ParseFile(FileInfo fi)
         {
+            if (fi.Extension == ".lock" ||
+                fi.Name.StartsWith("tmp") ||
+                fi.Name.StartsWith(".tmp") ||
+                !fi.Exists)
+            {
+                return null;
+            }
+
             Stream s = null;
             try
             {
                 s = TryOpenFile(fi, 50);
+                if (fi.Name == "index")
+                {
+                    //return ReadIndex(fi, s);
+                }
+
+                if (fi.Name == "HEAD")
+                {
+                    return ReadHead(fi, s);
+                }
+
+                if (fi.Directory.Parent.Name == "refs")
+                {
+                    return ReadRef(fi, s);
+                }
+
+                if (fi.Directory.Name == "pack")
+                {
+                    return ReadPack(fi);
+                }
+
+                if (fi.Directory.Name == "info")
+                {
+                    return ReadInfo(fi, s);
+                }
+
                 if (fi.Directory.Parent.Name == "objects")
                 {
-                    s = new Ionic.Zlib.ZlibStream(s, Ionic.Zlib.CompressionMode.Decompress);
-
-                    var header = ReadHeader(s);
-                    return new GitObject
-                    {
-                        Header = header,
-                        Body = ReadBody(fi, s, header),
-                        Id = fi.Directory.Name + fi.Name
-                    };
-
-                }
-                else
-                {
-                    return new GitObject
-                    {
-                        Body = ReadFile(s)
-                    };
+                    return ReadObject(fi, ref s);
                 }
             }
             catch (Exception)
@@ -49,6 +67,97 @@ namespace Glitter.WPF
             }
 
             return null;
+        }
+
+        private static GitObject ReadIndex(FileInfo fi, Stream s)
+        {
+            using (var sr = new StreamReader(s))
+            {
+                var go = new GitObject { Id = fi.Name, Type = ObjectType.Index };
+                go.References.Add(sr.ReadToEnd().Trim());
+                return go;
+            }
+        }
+
+        private static GitObject ReadHead(FileInfo fi, Stream s)
+        {
+            using (var sr = new StreamReader(s))
+            {
+                var go = new GitObject
+                {
+                    Id = fi.Name,
+                    Type = ObjectType.Head,
+                    Body = sr.ReadToEnd().Trim()
+                };
+                go.References.Add(ExtractReferenceFromHead(go.Body));
+
+                return go;
+            }
+        }
+
+        public static string ExtractReferenceFromHead(string content)
+        {
+            Match match = Regex.Match(content, "(?<=ref: refs/heads/).*");
+            return match.Success ? match.Value : content;
+        }
+
+        private static GitObject ReadRef(FileInfo fi, Stream s)
+        {
+            using (var sr = new StreamReader(s))
+            {
+                var go = new GitObject
+                {
+                    Id = fi.Name,
+                    Type = ObjectType.Branch,
+                    Body = sr.ReadToEnd().Trim()
+                };
+                go.References.Add(go.Body);
+                return go;
+            }
+        }
+
+        private static GitObject ReadPack(FileInfo fi)
+        {
+            var go = new GitObject
+            {
+                Id = fi.Name,
+                Type = ObjectType.Pack
+            };
+            if (fi.Extension == ".idx")
+            {
+                go.References.Add(Path.ChangeExtension(fi.Name, ".pack"));
+            }
+
+            return go;
+        }
+
+        private static GitObject ReadInfo(FileInfo fi, Stream s)
+        {
+            GitObject result = new GitObject
+            {
+                Id = fi.Name,
+                Type = ObjectType.Info
+            };
+            if (fi.Name == "packs")
+            {
+                ReadPackInfo(s, result);
+            }
+
+            return result;
+        }
+
+        private static void ReadPackInfo(Stream s, GitObject go)
+        {
+            using (var sr = new StreamReader(s))
+            {
+                go.Body = sr.ReadToEnd();
+            }
+
+            var packs = new Regex(@"P (?<id>.*)");
+            foreach (Match pack in packs.Matches(go.Body))
+            {
+                go.References.Add(pack.Groups["id"].Value);
+            }
         }
 
         private static FileStream TryOpenFile(FileInfo fi, int retries)
@@ -74,6 +183,19 @@ namespace Glitter.WPF
             }
         }
 
+        private static GitObject ReadObject(FileInfo fi, ref Stream s)
+        {
+            s = new Ionic.Zlib.ZlibStream(s, Ionic.Zlib.CompressionMode.Decompress);
+
+            var go = new GitObject();
+            var header = ReadHeader(s);
+            go.Type = header.Type;
+
+            ReadBody(fi, s, go, header);
+            go.Id = fi.Directory.Name + fi.Name;
+
+            return go;
+        }
         public static ObjectHeader ReadHeader(Stream stream)
         {
             var type = new StringBuilder();
@@ -97,19 +219,40 @@ namespace Glitter.WPF
             };
         }
 
-        private static string ReadBody(FileInfo fi, Stream s, ObjectHeader header)
+        private static void ReadBody(FileInfo fi, Stream s, GitObject go, ObjectHeader header)
         {
-            if (header.Type == ObjectType.Tree)
+            switch (header.Type)
             {
-                return ReadTree(s, header);
-            }
-            else
-            {
-                return ReadFile(s);
+                case ObjectType.Tree:
+                    ReadTree(s, go, header);
+                    break;
+                case ObjectType.Commit:
+                    ReadCommit(s, go);
+                    break;
+                default:
+                    go.Body = ReadFile(s);
+                    break;
             }
         }
 
-        public static string ReadFile(Stream s)
+        private static void ReadCommit(Stream s, GitObject go)
+        {
+            go.Body = ReadFile(s);
+
+            Regex parents = new Regex(@"parent (?<id>\w*)");
+            foreach (Match match in parents.Matches(go.Body))
+            {
+                go.References.Add(match.Groups["id"].Value);
+            }
+
+            var tree = Regex.Match(go.Body, @"tree (?<id>\w*)");
+            if (tree.Success)
+            {
+                go.References.Add(tree.Groups["id"].Value);
+            }
+        }
+
+        private static string ReadFile(Stream s)
         {
             StringBuilder sb = new StringBuilder();
             int b = 0;
@@ -122,7 +265,7 @@ namespace Glitter.WPF
             return sb.ToString();
         }
 
-        private static string ReadTree(Stream s, ObjectHeader header)
+        private static void ReadTree(Stream s, GitObject go, ObjectHeader header)
         {
             var sb = new StringBuilder();
 
@@ -139,17 +282,26 @@ namespace Glitter.WPF
                 }
 
                 // Add a space and increase the counter 
-                // for the \0 that was read
+                // for the \0 that was read and the hash
                 sb.Append(' ');
-                i++;
+                i += 21;
 
-                // Read the SHA1 id of the file or sub tree
-                for (int j = 0; j < 20 && i < header.Size; j++, i++)
-                {
-                    sb.Append(s.ReadByte().ToString("x2"));
-                }
+                var hash = ReadHash(s);
+                go.References.Add(hash);
+                sb.Append(hash);
 
                 sb.AppendLine();
+            }
+
+            go.Body = sb.ToString();
+        }
+
+        private static string ReadHash(Stream s)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < 20; j++)
+            {
+                sb.Append(s.ReadByte().ToString("x2"));
             }
 
             return sb.ToString();

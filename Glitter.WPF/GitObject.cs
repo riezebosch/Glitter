@@ -9,7 +9,14 @@ namespace Glitter.WPF
     public class GitObject
     {
         public string Id { get; set; }
-        public ObjectHeader Header { get; set; }
         public string Body { get; set; }
+        public ObjectType Type { get; set; }
+
+        public IList<string> References { get; private set; }
+
+        public GitObject()
+        {
+            References = new List<string>();
+        }
     }
 }

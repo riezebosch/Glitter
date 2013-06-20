@@ -81,5 +81,19 @@ namespace Glitter.WPF.Test
                 file.Delete();
             }
         }
+
+        [TestMethod]
+        public void TestExtractReferenceFromHeadToReference()
+        {
+            var result = ObjectFileParser.ExtractReferenceFromHead("ref: refs/heads/master");
+            Assert.AreEqual("master", result);
+        }
+
+        [TestMethod]
+        public void TestExtractReferenceFromHeadToCommit()
+        {
+            var result = ObjectFileParser.ExtractReferenceFromHead("987456");
+            Assert.AreEqual("987456", result);
+        }
     }
 }

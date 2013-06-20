@@ -7,7 +7,7 @@
                    TextWrapping="Wrap" Text="Drop a repository" 
                    VerticalAlignment="Center"
                    FontSize="36"
-                   Name="Banner"/>
+                   Name="Banner" Margin="119,134,119,137"/>
         <ScrollViewer Name="SV">
             <StackPanel HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"

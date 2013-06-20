@@ -56,7 +56,7 @@ namespace Glitter.WPF
                     var tb = new UserControl1()
                     {
                         Text = obj.Body ?? "Error parsing file",
-                        Background = ToColorBrush(obj.Header),
+                        Background = ToColorBrush(obj.Type),
                         Foreground = new SolidColorBrush(Colors.White),
                         DataContext = obj
                     };
@@ -110,14 +110,9 @@ namespace Glitter.WPF
             Banner.Visibility = System.Windows.Visibility.Hidden;
         }
 
-        private static Brush ToColorBrush(ObjectHeader header)
+        private static Brush ToColorBrush(ObjectType type)
         {
-            if (header == null)
-            {
-                return new SolidColorBrush(Colors.DarkGray);
-            }
-
-            switch (header.Type)
+            switch (type)
             {
                 case ObjectType.Tree:
                     return new SolidColorBrush(Color.FromRgb(0x70, 0xAD, 0x47));

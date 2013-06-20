@@ -23,12 +23,12 @@ namespace Glitter.WPF
 
         private static Color ToColor(GitObject go)
         {
-            if (go == null || go.Header == null)
+            if (go == null)
             {
                 return Colors.DarkGray;
             }
 
-            switch (go.Header.Type)
+            switch (go.Type)
             {
                 case ObjectType.Tree:
                     return Color.FromRgb(0x70, 0xAD, 0x47);
@@ -39,16 +39,6 @@ namespace Glitter.WPF
                 default:
                     return Colors.White;
             }
-        }
-
-        private Color Invert(Color originalColor)
-        {
-            Color invertedColor = new Color();
-            invertedColor.ScR = 1.0F - originalColor.ScR;
-            invertedColor.ScG = 1.0F - originalColor.ScG;
-            invertedColor.ScB = 1.0F - originalColor.ScB;
-            invertedColor.ScA = originalColor.ScA;
-            return invertedColor;
         }
     }
 }
