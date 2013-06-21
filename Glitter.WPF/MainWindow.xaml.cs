@@ -20,7 +20,7 @@ namespace Glitter.WPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public sealed partial class MainWindow : Window, IDisposable
     {
         FileSystemWatcher watcher = new FileSystemWatcher();
 
@@ -125,5 +125,22 @@ namespace Glitter.WPF
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (watcher != null)
+                {
+                    watcher.Dispose();
+                    watcher = null;
+                }
+            }
+        }
     }
 }

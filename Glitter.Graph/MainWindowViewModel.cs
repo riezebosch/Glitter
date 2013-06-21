@@ -13,7 +13,7 @@ using System.Windows.Threading;
 
 namespace Glitter.Graph
 {
-    class MainWindowViewModel : INotifyPropertyChanged
+    sealed class MainWindowViewModel : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -27,26 +27,11 @@ namespace Glitter.Graph
         }
 
         FileSystemWatcher _watcher;
+        private bool _disposed;
 
         public MainWindowViewModel()
         {
-            var di = new DirectoryInfo(@"C:\git\demo\.git");
-
-            _watcher = new FileSystemWatcher(di.FullName) { IncludeSubdirectories = true };
-            _watcher.Created += (o, e) => Application.Current.Dispatcher.Invoke(() => AddFileToGraph(new FileInfo(e.FullPath)));
-            _watcher.Changed += (o, e) => Application.Current.Dispatcher.Invoke(() => AddFileToGraph(new FileInfo(e.FullPath)));
-            _watcher.Renamed += (o, e) => Application.Current.Dispatcher.Invoke(() => UpdateFileOnGraph(new FileInfo(e.OldFullPath), new FileInfo(e.FullPath)));
-            _watcher.Deleted += (o, e) => Application.Current.Dispatcher.Invoke(() => RemoveFileFromGraph(new FileInfo(e.FullPath)));
-            _watcher.EnableRaisingEvents = true;
-
-            foreach (var item in new DirectoryInfo(Path.Combine(di.FullName, "objects")).EnumerateFiles("*.*", SearchOption.AllDirectories)
-                .Concat(new DirectoryInfo(Path.Combine(di.FullName, "refs")).EnumerateFiles("*.*", SearchOption.AllDirectories))
-                .Concat(new[] { new FileInfo(Path.Combine(di.FullName, "index")), new FileInfo(Path.Combine(di.FullName, "HEAD")) }))
-            {
-                AddFileToGraph(item);
-            }
-
-            OnPropertyChanged("Graph");
+             _watcher = new FileSystemWatcher() { IncludeSubdirectories = true };
         }
 
         private void OnPropertyChanged(string property)
@@ -125,6 +110,39 @@ namespace Glitter.Graph
                 _graph.AddVertex(target);
             }
             return target;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+            {
+                if (_watcher != null)
+                {
+                    _watcher.Dispose();
+                    _watcher = null; 
+                }
+
+                _disposed = true;
+            }
+        }
+
+        public void Start(DirectoryInfo di)
+        {
+            _watcher.Path = di.FullName;
+            _watcher.Created += (o, e) => Application.Current.Dispatcher.Invoke(() => AddFileToGraph(new FileInfo(e.FullPath)));
+            _watcher.Changed += (o, e) => Application.Current.Dispatcher.Invoke(() => AddFileToGraph(new FileInfo(e.FullPath)));
+            _watcher.Renamed += (o, e) => Application.Current.Dispatcher.Invoke(() => UpdateFileOnGraph(new FileInfo(e.OldFullPath), new FileInfo(e.FullPath)));
+            _watcher.Deleted += (o, e) => Application.Current.Dispatcher.Invoke(() => RemoveFileFromGraph(new FileInfo(e.FullPath)));
+            _watcher.EnableRaisingEvents = true;
+
+            foreach (var item in new DirectoryInfo(Path.Combine(di.FullName, "objects")).EnumerateFiles("*.*", SearchOption.AllDirectories)
+                .Concat(new DirectoryInfo(Path.Combine(di.FullName, "refs")).EnumerateFiles("*.*", SearchOption.AllDirectories))
+                .Concat(new[] { new FileInfo(Path.Combine(di.FullName, "index")), new FileInfo(Path.Combine(di.FullName, "HEAD")) }))
+            {
+                AddFileToGraph(item);
+            }
+
+            OnPropertyChanged("Graph");
         }
     }
 }
