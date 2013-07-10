@@ -86,7 +86,7 @@ namespace Glitter
                     ObjectType = ObjectType.Head,
                     Body = sr.ReadToEnd().Trim()
                 };
-                go.References.Add(ExtractReferenceFromHead(go.Body));
+                go.AddReference(ExtractReferenceFromHead(go.Body));
 
                 return go;
             }
@@ -108,7 +108,7 @@ namespace Glitter
                     ObjectType = ObjectType.Branch,
                     Body = sr.ReadToEnd().Trim()
                 };
-                go.References.Add(go.Body);
+                go.AddReference(go.Body);
                 return go;
             }
         }
@@ -122,7 +122,7 @@ namespace Glitter
             };
             if (fi.Extension == ".idx")
             {
-                go.References.Add(Path.ChangeExtension(fi.Name, ".pack"));
+                go.AddReference(Path.ChangeExtension(fi.Name, ".pack"));
             }
 
             return go;
@@ -153,7 +153,7 @@ namespace Glitter
             var packs = new Regex(@"P (?<id>.*)");
             foreach (Match pack in packs.Matches(go.Body))
             {
-                go.References.Add(pack.Groups["id"].Value);
+                go.AddReference(pack.Groups["id"].Value);
             }
         }
 
@@ -244,13 +244,13 @@ namespace Glitter
             Regex parents = new Regex(@"parent (?<id>\w*)");
             foreach (Match match in parents.Matches(go.Body))
             {
-                go.References.Add(match.Groups["id"].Value);
+                go.AddReference(match.Groups["id"].Value);
             }
 
             var tree = Regex.Match(go.Body, @"tree (?<id>\w*)");
             if (tree.Success)
             {
-                go.References.Add(tree.Groups["id"].Value);
+                go.AddReference(tree.Groups["id"].Value);
             }
         }
 
@@ -275,24 +275,26 @@ namespace Glitter
             // with every read operation.
             for (int i = 0; i < header.Size; )
             {
+                var line = new StringBuilder();
                 // Read the filename and the leading bytes
                 int b;
                 while ((b = s.ReadByte()) != '\0')
                 {
-                    sb.Append((char)b);
+                    line.Append((char)b);
                     i++;
                 }
 
+                var hash = ReadHash(s);
+                go.AddReference(hash, line.ToString());
+
                 // Add a space and increase the counter 
                 // for the \0 that was read and the hash
-                sb.Append(' ');
+                line.Append(' ');
                 i += 21;
 
-                var hash = ReadHash(s);
-                go.References.Add(hash);
-                sb.Append(hash);
+                line.Append(hash);
 
-                sb.AppendLine();
+                sb.AppendLine(line.ToString());
             }
 
             go.Body = sb.ToString();

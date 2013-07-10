@@ -12,11 +12,16 @@ namespace Glitter
         public string Body { get; set; }
         public ObjectType ObjectType { get; set; }
 
-        public IList<string> References { get; private set; }
+        public IList<Tuple<string, string>> References { get; private set; }
 
         public GitObject()
         {
-            References = new List<string>();
+            References = new List<Tuple<string, string>>();
+        }
+
+        public void AddReference(string id, string name = "")
+        {
+            References.Add(new Tuple<string, string>(id, name));
         }
     }
 }

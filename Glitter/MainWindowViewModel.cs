@@ -71,11 +71,11 @@ namespace Glitter
                 source.ObjectType = go.ObjectType;
                 foreach (var reference in go.References)
                 {
-                    var target = GetOrAddTargetById(reference);
-                    _graph.AddEdge(new FileEdge(source, target));
+                    var target = GetOrAddTargetById(reference.Item1);
+                    _graph.AddEdge(new FileEdge(source, target) { Name = reference.Item2 });
                 }
 
-                _graph.RemoveEdgeIf(e => e.Source == source && !go.References.Contains(e.Target.Id));
+                _graph.RemoveEdgeIf(e => e.Source == source && !go.References.Any(p => p.Item1 == e.Target.Id));
             }
         }
 

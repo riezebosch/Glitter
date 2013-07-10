@@ -13,5 +13,7 @@ namespace Glitter
             : base(source, target)
         {
         }
+
+        public string Name { get; set; }
     }
 }
