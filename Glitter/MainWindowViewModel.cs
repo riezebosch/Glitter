@@ -16,7 +16,8 @@ namespace Glitter
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private FileGraph _graph = new FileGraph(false);
+        private FileGraph _graph = new FileGraph(true);
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through binding in WPF.")]
         public FileGraph Graph
         {
@@ -76,6 +77,8 @@ namespace Glitter
                 }
 
                 _graph.RemoveEdgeIf(e => e.Source == source && !go.References.Any(p => p.Item1 == e.Target.Id));
+
+                OnPropertyChanged("Graph");
             }
         }
 
@@ -92,6 +95,7 @@ namespace Glitter
             if (source != null)
             {
                 source.Id = id;
+                OnPropertyChanged("Graph");
             }
             else
             {
@@ -136,9 +140,9 @@ namespace Glitter
             _watcher.Deleted += (o, e) => Application.Current.Dispatcher.Invoke(() => RemoveFileFromGraph(new FileInfo(e.FullPath)));
             _watcher.EnableRaisingEvents = true;
 
-            foreach (var item in new DirectoryInfo(Path.Combine(di.FullName, "objects")).EnumerateFiles("*.*", SearchOption.AllDirectories)
+            foreach (var item in new[] { new FileInfo(Path.Combine(di.FullName, "index")), new FileInfo(Path.Combine(di.FullName, "HEAD")) }
                 .Concat(new DirectoryInfo(Path.Combine(di.FullName, "refs")).EnumerateFiles("*.*", SearchOption.AllDirectories))
-                .Concat(new[] { new FileInfo(Path.Combine(di.FullName, "index")), new FileInfo(Path.Combine(di.FullName, "HEAD")) }))
+                .Concat(new DirectoryInfo(Path.Combine(di.FullName, "objects")).EnumerateFiles("*.*", SearchOption.AllDirectories)))
             {
                 AddFileToGraph(item);
             }

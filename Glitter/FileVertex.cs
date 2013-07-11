@@ -41,10 +41,5 @@ namespace Glitter
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
             }
         }
-
-        public override string ToString()
-        {
-            return Id;
-        }
     }
 }

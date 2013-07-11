@@ -300,11 +300,12 @@ namespace Glitter
             var sb = new StringBuilder();
             for (int j = 0; j < 6; j++)
             {
-                sb.Append(s.ReadByte());
+                sb.Append((char)s.ReadByte());
             }
 
             return sb.ToString();
         }
+
         private static string ReadFileName(Stream s)
         {
             var filename = new StringBuilder();

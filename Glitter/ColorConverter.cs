@@ -66,11 +66,11 @@ namespace Glitter
             switch (type)
             {
                 case ObjectType.Tree:
-                    return Color.FromRgb(0x70, 0xAD, 0x47);
+                    return Color.FromRgb(0x99, 0xFF, 0x33);
                 case ObjectType.Blob:
-                    return Color.FromRgb(0x1B, 0xA1, 0xE2);
+                    return Color.FromRgb(0x00, 0x78, 0xC9);
                 case ObjectType.Commit:
-                    return Color.FromRgb(0xED, 0x7D, 0x31);
+                    return Color.FromRgb(0xA8, 0x00, 0x00);
                 case ObjectType.Branch:
                     return Colors.Red;
                 case ObjectType.Pack:

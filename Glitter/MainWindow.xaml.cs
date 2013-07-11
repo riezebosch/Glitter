@@ -66,12 +66,17 @@ namespace Glitter
 
             Dispose();
 
+            gg_Area.EdgeCurvingEnabled = true;
+            gg_Area.DefaultLayoutAlgorithm = GraphX.LayoutAlgorithmTypeEnum.FR;
+            gg_Area.DefaultOverlapRemovalAlgorithm = GraphX.OverlapRemovalAlgorithmTypeEnum.FSA;
+            gg_Area.DefaulEdgeRoutingAlgorithm = GraphX.EdgeRoutingAlgorithmTypeEnum.Bundling;
+            gg_Area.MoveAnimation = new GraphX.Animations.FadeMoveAnimation(TimeSpan.FromMilliseconds(500));
+
             var model = new MainWindowViewModel();
+            model.Graph.VertexAdded += (o) => gg_Area.RelayoutGraph(false);
+            model.Graph.EdgeAdded += (o) => gg_Area.RelayoutGraph(false);
             model.Start(dir);
 
-            //gg_Area.DefaultLayoutAlgorithm = GraphX.LayoutAlgorithmTypeEnum.BoundedFR;
-            //gg_Area.DefaultOverlapRemovalAlgorithm = GraphX.OverlapRemovalAlgorithmTypeEnum.FSA;
-            //gg_Area.DefaulEdgeRoutingAlgorithm = GraphX.EdgeRoutingAlgorithmTypeEnum.SimpleER;
             gg_Area.GenerateGraph(model.Graph, true);
 
             DataContext = model;
@@ -93,6 +98,11 @@ namespace Glitter
             {
                 //graphLayout.Relayout();
             }
+        }
+
+        private void Algo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            gg_Area.RelayoutGraph();
         }
     }
 }

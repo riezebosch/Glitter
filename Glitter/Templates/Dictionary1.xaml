@@ -14,14 +14,13 @@
         <Setter Property="BorderThickness" Value="5,3,5,3"/>
         <Setter Property="Padding" Value="10,5,10,5"/>
         <Setter Property="BorderBrush" Value="#FF393939"/>
-        <Setter Property="gxl:HighlightBehaviour.HighlightStrategy" Value="UseExistingControls" />
-        <Setter Property="gxl:HighlightBehaviour.IsHighlightEnabled" Value="True" />
 
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type gxl:VertexControl}">
                     <Border Background="{Binding Path=ObjectType, Converter={StaticResource converter}}" 
                             BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="4"
 							CornerRadius="10,10,10,10"
                             Padding="{TemplateBinding Padding}">
                         <TextBlock Text="{Binding Path=Id}" Foreground="White"  />
@@ -42,20 +41,21 @@
         <Setter Property="gxl:DragBehaviour.IsDragEnabled"
                 Value="True" />
 
-        <Setter Property="gxl:HighlightBehaviour.IsHighlightEnabled" Value="False"/>
+        <Setter Property="gxl:HighlightBehaviour.IsHighlightEnabled" Value="True"/>
+        <Setter Property="gxl:HighlightBehaviour.HighlightControl" Value="VertexAndEdge"/>
+        <Setter Property="gxl:HighlightBehaviour.HighlightStrategy" Value="UseExistingControls"/>
+        <Setter Property="gxl:HighlightBehaviour.HighlightEdges" Value="Out"/>
 
         <Style.Triggers>
             <Trigger Property="gxl:HighlightBehaviour.Highlighted" Value="True">
-                <Setter Property="Background" Value="Gold"/>
                 <Setter Property="BorderThickness" Value="7"/>
+                <Setter Property="BorderBrush" Value="Gold"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <!-- EDGE CONTROL -->
     <Style TargetType="{x:Type gxl:EdgeControl}">
-        <Setter Property="gxl:HighlightBehaviour.IsHighlightEnabled" Value="True" />
-        
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type gxl:EdgeControl}">
@@ -84,8 +84,7 @@
         <Setter Property="Opacity"
                 Value="1" />
 
-        <Setter Property="gxl:HighlightBehaviour.IsHighlightEnabled" Value="False"/>
-
+        <Setter Property="gxl:HighlightBehaviour.IsHighlightEnabled" Value="True"/>
 
         <Style.Triggers>
             <Trigger Property="gxl:HighlightBehaviour.Highlighted" Value="True">
