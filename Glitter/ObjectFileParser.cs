@@ -300,7 +300,7 @@ namespace Glitter
             var sb = new StringBuilder();
             for (int j = 0; j < 6; j++)
             {
-                sb.Append((char)s.ReadByte());
+                sb.Append(s.ReadByte());
             }
 
             return sb.ToString();
