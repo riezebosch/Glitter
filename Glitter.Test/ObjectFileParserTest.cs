@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Glitter.Test
 {
@@ -74,6 +75,7 @@ namespace Glitter.Test
             try
             {
                 var result = ObjectFileParser.ParseFile(file);
+                StringAssert.Contains(result.Body, "test.txt");
                 StringAssert.Contains(result.Body, "d0f89fe97552ddd9cefcab879175436503bc9251");
             }
             finally
@@ -94,6 +96,20 @@ namespace Glitter.Test
         {
             var result = ObjectFileParser.ExtractReferenceFromHead("987456");
             Assert.AreEqual("987456", result);
+        }
+
+        [TestMethod]
+        public void TestTreeRegex()
+        {
+            Assert.IsTrue(Regex.Match("\0\0\0", "\0{3}").Success);
+
+            var r = new Regex("\\d+ (?<name>.*?)\0(?<id>.*)");
+            var input = "01234 test.txt\0asdfsdf";
+
+            Match match = r.Match(input);
+            Assert.IsTrue(match.Success, "Match not succesfull");
+            Assert.IsTrue(match.Groups["name"].Success, "Name group not matched.");
+            Assert.IsTrue(match.Groups["id"].Success, "Id group not matched.");
         }
     }
 }

@@ -270,36 +270,53 @@ namespace Glitter
         private static void ReadTree(Stream s, GitObject go, ObjectHeader header)
         {
             var sb = new StringBuilder();
-
+            
             // The counter is increased inside the loop
             // with every read operation.
             for (int i = 0; i < header.Size; )
             {
-                var line = new StringBuilder();
-                // Read the filename and the leading bytes
-                int b;
-                while ((b = s.ReadByte()) != '\0')
-                {
-                    line.Append((char)b);
-                    i++;
-                }
+                var leading = ReadLeadingBytes(s);
+                sb.Append(leading);
+                sb.Append(' ');
+                i += 7;
+
+                var filename = ReadFileName(s);
+                sb.Append(filename);
+                sb.Append(' ');
+                i += filename.Length + 1;
 
                 var hash = ReadHash(s);
-                go.AddReference(hash, line.ToString());
+                sb.AppendLine(hash);
+                i += 20;
 
-                // Add a space and increase the counter 
-                // for the \0 that was read and the hash
-                line.Append(' ');
-                i += 21;
-
-                line.Append(hash);
-
-                sb.AppendLine(line.ToString());
+                go.AddReference(hash, filename);
             }
 
             go.Body = sb.ToString();
         }
 
+        private static string ReadLeadingBytes(Stream s)
+        {
+            var sb = new StringBuilder();
+            for (int j = 0; j < 6; j++)
+            {
+                sb.Append((char)s.ReadByte());
+            }
+
+            return sb.ToString();
+        }
+        private static string ReadFileName(Stream s)
+        {
+            var filename = new StringBuilder();
+            int b;
+
+            while ((b = s.ReadByte()) != '\0')
+            {
+                filename.Append((char)b);
+            }
+
+            return filename.ToString();
+        }
         private static string ReadHash(Stream s)
         {
             StringBuilder sb = new StringBuilder();
