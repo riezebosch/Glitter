@@ -62,12 +62,17 @@ namespace Glitter
             Title = dir.FullName;
 
             Banner.Visibility = System.Windows.Visibility.Hidden;
-            zoom.Visibility = System.Windows.Visibility.Visible;
+            gg_zoomctrl.Visibility = System.Windows.Visibility.Visible;
 
             Dispose();
 
             var model = new MainWindowViewModel();
             model.Start(dir);
+
+            //gg_Area.DefaultLayoutAlgorithm = GraphX.LayoutAlgorithmTypeEnum.BoundedFR;
+            //gg_Area.DefaultOverlapRemovalAlgorithm = GraphX.OverlapRemovalAlgorithmTypeEnum.FSA;
+            //gg_Area.DefaulEdgeRoutingAlgorithm = GraphX.EdgeRoutingAlgorithmTypeEnum.SimpleER;
+            gg_Area.GenerateGraph(model.Graph, true);
 
             DataContext = model;
         }
@@ -86,7 +91,7 @@ namespace Glitter
         {
             if (DataContext != null)
             {
-                graphLayout.Relayout();
+                //graphLayout.Relayout();
             }
         }
     }

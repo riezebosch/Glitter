@@ -7,7 +7,7 @@
 # Install the nuGet packages for the projects
 ###########################################################################################################################
 Write-Host "Installing nuGet packages.... "
-Install-Package GraphSharp -Project Glitter
+#Install-Package GraphSharp -Project Glitter
 Install-Package DotNetZip -Project Glitter
 Install-Package DotNetZip -Project Glitter.Test
 Install-Package WPFExtensions -Project Glitter

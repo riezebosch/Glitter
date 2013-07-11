@@ -1,18 +1,26 @@
 ﻿<Window x:Class="Glitter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:graphsharp="clr-namespace:GraphSharp.Controls;assembly=GraphSharp.Controls"
+        
+        xmlns:graphxctrl="clr-namespace:GraphX.Controls;assembly=GraphX"
         xmlns:zoom="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions" 
         xmlns:local="clr-namespace:Glitter"
         Title="MainWindow" Height="350" Width="525" WindowState="Maximized"
         AllowDrop="True" DragEnter="allowdrop_DragEnter" Drop="allowdrop_Drop" >
     <Window.Resources>
-        <local:ColorConverter x:Key="converter" />
-        <DataTemplate x:Key="demoTemplate" DataType="{x:Type local:FileVertex}">
-            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" Foreground="White"  />
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Templates/Dictionary1.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+        <!--<local:ColorConverter x:Key="converter" />-->
 
-        <Style TargetType="{x:Type graphsharp:VertexControl}">
+        
+        <!--<DataTemplate x:Key="demoTemplate" DataType="{x:Type local:FileVertex}">
+            <TextBlock Text="{Binding Path=Id, Mode=OneWay}" Foreground="White"  />
+        </DataTemplate>-->
+
+        <!--<Style TargetType="{x:Type graphsharp:VertexControl}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type graphsharp:VertexControl}">
@@ -36,10 +44,10 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
 
 
-        <Style TargetType="{x:Type graphsharp:EdgeControl}">
+        <!--<Style TargetType="{x:Type graphsharp:EdgeControl}">
             <Style.Resources>
                 <ToolTip x:Key="ToolTipContent">
                     <StackPanel>
@@ -49,7 +57,7 @@
                 </ToolTip>
             </Style.Resources>
             <Setter Property="ToolTip" Value="{StaticResource ToolTipContent}"/>
-        </Style>
+        </Style>-->
     </Window.Resources>
     <Grid>
         <TextBlock HorizontalAlignment="Center" 
@@ -57,18 +65,25 @@
                    VerticalAlignment="Center"
                    FontSize="36"
                    Name="Banner" Margin="119,134,119,137"/>
-        <zoom:ZoomControl  ZoomBoxOpacity="0.5" MouseDoubleClick="zoom_MouseDoubleClick"
+        <!--<zoom:ZoomControl  ZoomBoxOpacity="0.5" MouseDoubleClick="zoom_MouseDoubleClick"
                            Background="#ff656565" 
                            Margin="0,-6,0,6" 
                            x:Name="zoom"
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
                            Visibility="Hidden">
+            <zoom:ZoomControl.ZoomBox.>
+                <
+            </zoom:ZoomControl.ZoomBox>
             <local:FileGraphLayout x:Name="graphLayout" Margin="10"
                                    Graph="{Binding Path=Graph}"
                                    LayoutAlgorithmType="FR" 
                                    OverlapRemovalAlgorithmType="FSA"
                                    HighlightAlgorithmType="Simple" />
-        </zoom:ZoomControl>
+        </zoom:ZoomControl>-->
+
+        <graphxctrl:ZoomControl x:Name="gg_zoomctrl" Visibility="Hidden">
+            <local:FileGraphLayout x:Name="gg_Area"/>
+        </graphxctrl:ZoomControl>
     </Grid>
 </Window>

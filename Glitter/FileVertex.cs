@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GraphX;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -10,7 +11,7 @@ using System.Windows.Media;
 
 namespace Glitter
 {
-    class FileVertex : INotifyPropertyChanged
+    class FileVertex : VertexBase, INotifyPropertyChanged
     {
         public string Id { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through binding in WPF.")]
@@ -39,6 +40,11 @@ namespace Glitter
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
             }
+        }
+
+        public override string ToString()
+        {
+            return Id;
         }
     }
 }
