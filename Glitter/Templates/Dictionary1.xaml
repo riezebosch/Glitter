@@ -23,7 +23,14 @@
                             BorderThickness="4"
 							CornerRadius="10,10,10,10"
                             Padding="{TemplateBinding Padding}">
-                        <TextBlock Text="{Binding Path=Id}" Foreground="White"  />
+                        <Grid>
+                            <TextBlock Text="{Binding Path=Id}" Foreground="Black">
+                                <TextBlock.Effect>
+                                    <BlurEffect Radius="8.0" KernelType="Gaussian" />
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="{Binding Path=Id}" Foreground="White" />
+                        </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
