@@ -29,7 +29,8 @@ namespace Glitter
 
         FileSystemWatcher _watcher;
         private bool _disposed;
-
+        private bool _loading = false;
+        
         public MainWindowViewModel()
         {
             _watcher = new FileSystemWatcher();
@@ -38,7 +39,7 @@ namespace Glitter
 
         private void OnPropertyChanged(string property)
         {
-            if (PropertyChanged != null)
+            if (PropertyChanged != null && !_loading)
             {
                 Application.Current.Dispatcher.Invoke(() => PropertyChanged(this, new PropertyChangedEventArgs(property)));
             }
@@ -138,6 +139,7 @@ namespace Glitter
 
         public void Load(DirectoryInfo di)
         {
+            _loading = true;
             _watcher.Path = di.FullName;
             _watcher.Created += (o, e) => AddFileToGraph(new FileInfo(e.FullPath));
             _watcher.Changed += (o, e) => AddFileToGraph(new FileInfo(e.FullPath));
@@ -152,7 +154,9 @@ namespace Glitter
                 AddFileToGraph(item);
             }
 
+            _loading = false;
             OnPropertyChanged("Graph");
+
         }
     }
 }

@@ -45,14 +45,16 @@ namespace Glitter
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "VM is disposed via the DataContext property")]
-        private void allowdrop_Drop(object sender, DragEventArgs e)
+        private async void allowdrop_Drop(object sender, DragEventArgs e)
         {
             Banner.Visibility = System.Windows.Visibility.Hidden;
 
             var dir = ExtractRepositoryDirectory(e);
             Title = dir.FullName;
 
-            _model.Load(dir);
+            this.Cursor = Cursors.Wait;
+            await Task.Run(() => _model.Load(dir));
+            this.Cursor = Cursors.Arrow;
             //DataContext = _model;
         }
 
