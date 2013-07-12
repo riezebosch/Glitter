@@ -40,7 +40,7 @@ namespace Glitter
         {
             if (PropertyChanged != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
+                Application.Current.Dispatcher.Invoke(() => PropertyChanged(this, new PropertyChangedEventArgs(property)));
             }
         }
 
@@ -67,13 +67,17 @@ namespace Glitter
             if (go != null)
             {
                 var source = GetOrAddTargetById(go.Id);
-                source.Body = go.Body;
+                source.GitObject = go;
 
-                source.ObjectType = go.ObjectType;
                 foreach (var reference in go.References)
                 {
                     var target = GetOrAddTargetById(reference.Item1);
                     _graph.AddEdge(new FileEdge(source, target) { Name = reference.Item2 });
+                }
+
+                foreach (var reference in _graph.Vertices.Where(t => t.GitObject != null && t.GitObject.References.Any(r => r.Item1 == go.Id)))
+                {
+                    _graph.AddEdge(new FileEdge(reference, source));
                 }
 
                 _graph.RemoveEdgeIf(e => e.Source == source && !go.References.Any(p => p.Item1 == e.Target.Id));
@@ -94,7 +98,8 @@ namespace Glitter
 
             if (source != null)
             {
-                source.Id = id;
+                source.Id = 
+                    source.GitObject.Id = id;
                 OnPropertyChanged("Graph");
             }
             else
@@ -131,13 +136,13 @@ namespace Glitter
             }
         }
 
-        public void Start(DirectoryInfo di)
+        public void Load(DirectoryInfo di)
         {
             _watcher.Path = di.FullName;
-            _watcher.Created += (o, e) => Application.Current.Dispatcher.Invoke(() => AddFileToGraph(new FileInfo(e.FullPath)));
-            _watcher.Changed += (o, e) => Application.Current.Dispatcher.Invoke(() => AddFileToGraph(new FileInfo(e.FullPath)));
-            _watcher.Renamed += (o, e) => Application.Current.Dispatcher.Invoke(() => UpdateFileOnGraph(new FileInfo(e.OldFullPath), new FileInfo(e.FullPath)));
-            _watcher.Deleted += (o, e) => Application.Current.Dispatcher.Invoke(() => RemoveFileFromGraph(new FileInfo(e.FullPath)));
+            _watcher.Created += (o, e) => AddFileToGraph(new FileInfo(e.FullPath));
+            _watcher.Changed += (o, e) => AddFileToGraph(new FileInfo(e.FullPath));
+            _watcher.Renamed += (o, e) => UpdateFileOnGraph(new FileInfo(e.OldFullPath), new FileInfo(e.FullPath));
+            _watcher.Deleted += (o, e) => RemoveFileFromGraph(new FileInfo(e.FullPath));
             _watcher.EnableRaisingEvents = true;
 
             foreach (var item in new[] { new FileInfo(Path.Combine(di.FullName, "index")), new FileInfo(Path.Combine(di.FullName, "HEAD")) }

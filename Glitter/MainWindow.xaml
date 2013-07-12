@@ -24,17 +24,24 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <TextBlock HorizontalAlignment="Center" 
-                   TextWrapping="Wrap" Text="Drop a repository" 
-                   VerticalAlignment="Center"
-                   FontSize="36"
-                   Name="Banner" Margin="119,134,119,137"/>
-
-
-        <graphxctrl:ZoomControl x:Name="gg_zoomctrl" Visibility="Hidden">
+        <graphxctrl:ZoomControl x:Name="gg_zoomctrl" Background="#ff656565">
             <local:FileGraphLayout x:Name="gg_Area" DefaultLayoutAlgorithm="{Binding ElementName=Algo, Path=SelectedItem}" />
         </graphxctrl:ZoomControl>
-        <ComboBox Width="100" Height="25" VerticalAlignment="Top" HorizontalAlignment="Right" ItemsSource="{Binding Source={StaticResource LayoutTypes}}" x:Name="Algo" SelectionChanged="Algo_SelectionChanged" />
+        
+        <ComboBox Width="100" 
+                  Height="25" 
+                  VerticalAlignment="Top" 
+                  HorizontalAlignment="Right" 
+                  Margin="10"
+                  ItemsSource="{Binding Source={StaticResource LayoutTypes}}" 
+                  x:Name="Algo" 
+                  SelectionChanged="Algo_SelectionChanged" />
 
+        <Grid Name="Banner" Background="White" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <TextBlock HorizontalAlignment="Center" 
+                       TextWrapping="Wrap" Text="Drop a repository" 
+                       VerticalAlignment="Center"
+                       FontSize="36" />
+        </Grid>
     </Grid>
 </Window>

@@ -18,7 +18,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type gxl:VertexControl}">
-                    <Border Background="{Binding Path=ObjectType, Converter={StaticResource converter}}" 
+                    <Border Background="{Binding Path=GitObject.ObjectType, Converter={StaticResource converter}}" 
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="4"
 							CornerRadius="10,10,10,10"
@@ -31,8 +31,12 @@
 
         <Setter Property="ToolTip">
             <Setter.Value>
-                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="8" Background="White" UseLayoutRounding="True">
-                    <TextBlock Text="{Binding Body}" Margin="3" HorizontalAlignment="Center"/>
+                <Border BorderBrush="Black" 
+                        BorderThickness="2" 
+                        CornerRadius="8" 
+                        Background="Transparent" 
+                        UseLayoutRounding="True">
+                    <TextBlock Text="{Binding GitObject.Body}" Margin="3" HorizontalAlignment="Center"/>
                 </Border>
             </Setter.Value>
         </Setter>
@@ -44,7 +48,7 @@
         <Setter Property="gxl:HighlightBehaviour.IsHighlightEnabled" Value="True"/>
         <Setter Property="gxl:HighlightBehaviour.HighlightControl" Value="VertexAndEdge"/>
         <Setter Property="gxl:HighlightBehaviour.HighlightStrategy" Value="UseExistingControls"/>
-        <Setter Property="gxl:HighlightBehaviour.HighlightEdges" Value="Out"/>
+        <Setter Property="gxl:HighlightBehaviour.HighlightEdges" Value="All"/>
 
         <Style.Triggers>
             <Trigger Property="gxl:HighlightBehaviour.Highlighted" Value="True">
@@ -67,7 +71,7 @@
                         <Path Stroke="{TemplateBinding Foreground}"
                           StrokeThickness="2" MinWidth="1" MinHeight="1" 
                             x:Name="PART_edgeArrowPath"/>
-                        <gxl:EdgeLabelControl x:Name="PART_edgeLabel" Content="{Binding Edge.Name, RelativeSource={RelativeSource TemplatedParent}}" />
+                        <gxl:EdgeLabelControl x:Name="PART_edgeLabel" Content="{Binding Name, RelativeSource={RelativeSource TemplatedParent}}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

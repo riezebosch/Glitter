@@ -21,20 +21,39 @@ namespace Glitter
     /// </summary>
     public sealed partial class MainWindow : Window, IDisposable
     {
+        private MainWindowViewModel _model = new MainWindowViewModel();
+
         public MainWindow()
         {
-            //DataContext = new MainWindowViewModel();
             InitializeComponent();
-        }
+
+            gg_Area.EdgeCurvingEnabled = true;
+            gg_Area.DefaultLayoutAlgorithm = GraphX.LayoutAlgorithmTypeEnum.FR;
+            gg_Area.DefaultOverlapRemovalAlgorithm = GraphX.OverlapRemovalAlgorithmTypeEnum.FSA;
+            gg_Area.DefaulEdgeRoutingAlgorithm = GraphX.EdgeRoutingAlgorithmTypeEnum.Bundling;
+            gg_Area.MoveAnimation = new GraphX.Animations.FadeMoveAnimation(TimeSpan.FromMilliseconds(500));
+
+            _model.PropertyChanged += (f1, f2) => gg_Area.GenerateGraph(_model.Graph, true);
+}
 
         private void allowdrop_DragEnter(object sender, DragEventArgs e)
         {
-
             if (ExtractRepositoryDirectory(e) != null)
             {
                 e.Effects = DragDropEffects.All;
             }
+        }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "VM is disposed via the DataContext property")]
+        private void allowdrop_Drop(object sender, DragEventArgs e)
+        {
+            Banner.Visibility = System.Windows.Visibility.Hidden;
+
+            var dir = ExtractRepositoryDirectory(e);
+            Title = dir.FullName;
+
+            _model.Load(dir);
+            //DataContext = _model;
         }
 
         private static DirectoryInfo ExtractRepositoryDirectory(DragEventArgs e)
@@ -55,33 +74,6 @@ namespace Glitter
             return null;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "VM is disposed via the DataContext property")]
-        private void allowdrop_Drop(object sender, DragEventArgs e)
-        {
-            var dir = ExtractRepositoryDirectory(e);
-            Title = dir.FullName;
-
-            Banner.Visibility = System.Windows.Visibility.Hidden;
-            gg_zoomctrl.Visibility = System.Windows.Visibility.Visible;
-
-            Dispose();
-
-            gg_Area.EdgeCurvingEnabled = true;
-            gg_Area.DefaultLayoutAlgorithm = GraphX.LayoutAlgorithmTypeEnum.FR;
-            gg_Area.DefaultOverlapRemovalAlgorithm = GraphX.OverlapRemovalAlgorithmTypeEnum.FSA;
-            gg_Area.DefaulEdgeRoutingAlgorithm = GraphX.EdgeRoutingAlgorithmTypeEnum.Bundling;
-            gg_Area.MoveAnimation = new GraphX.Animations.FadeMoveAnimation(TimeSpan.FromMilliseconds(500));
-
-            var model = new MainWindowViewModel();
-            model.Graph.VertexAdded += (o) => gg_Area.RelayoutGraph(false);
-            model.Graph.EdgeAdded += (o) => gg_Area.RelayoutGraph(false);
-            model.Start(dir);
-
-            gg_Area.GenerateGraph(model.Graph, true);
-
-            DataContext = model;
-        }
-
         public void Dispose()
         {
             var vm = DataContext as IDisposable;
@@ -90,19 +82,17 @@ namespace Glitter
                 vm.Dispose();
                 vm = null;
             }
-        }
 
-        private void zoom_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (DataContext != null)
+            if (_model != null)
             {
-                //graphLayout.Relayout();
+                _model.Dispose();
+                _model = null;
             }
         }
 
         private void Algo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            gg_Area.RelayoutGraph();
+            gg_Area.RelayoutGraph(true);
         }
     }
 }
