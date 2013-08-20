@@ -45,7 +45,7 @@
                         CornerRadius="8" 
                         Background="White" 
                         UseLayoutRounding="True"
-                        Visibility="{Binding Path=GitObject.Body, Converter={StaticResource isNotNull}}">
+                        Visibility="{Binding Path=GitObject, Converter={StaticResource isNotNull}}"> <!-- No idea why, but the value converter works when binding on parent object. -->
                     <TextBlock Text="{Binding GitObject.Body}" Background="Transparent" Margin="3" HorizontalAlignment="Center"/>
                 </Border>
             </Setter.Value>
