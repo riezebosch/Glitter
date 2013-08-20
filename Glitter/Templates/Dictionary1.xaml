@@ -8,7 +8,7 @@
     xmlns:wpfconv="clr-namespace:WPFExtensions.Converters;assembly=WPFExtensions">
 
     <local:ColorConverter x:Key="converter" />
-    <wpfconv:BoolToVisibilityConverter x:Key="isNotNull" />
+    <local:IsNotNullConverter x:Key="isNotNull" />
 
     <!-- VERTEX CONTROL -->
     <Style TargetType="{x:Type gxl:VertexControl}">
