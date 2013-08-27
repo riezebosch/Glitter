@@ -45,7 +45,7 @@
                         CornerRadius="8" 
                         Background="White" 
                         UseLayoutRounding="True"
-                        Visibility="{Binding Path=GitObject.Body, TargetNullValue=Hidden, FallbackValue=Visible}">
+                        Visibility="{Binding Path=GitObject.Body, Converter={StaticResource isNotNull}}">
                     <TextBlock Text="{Binding GitObject.Body}" Background="Transparent" Margin="3" HorizontalAlignment="Center"/>
                 </Border>
             </Setter.Value>
