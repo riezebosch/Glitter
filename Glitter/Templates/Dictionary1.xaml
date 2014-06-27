@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:Glitter"
     xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
-    xmlns:gxl="clr-namespace:GraphX;assembly=GraphX"
+    xmlns:gxl="clr-namespace:GraphX;assembly=GraphX.Controls"
     xmlns:conv="clr-namespace:GraphX.Converters;assembly=GraphX"
     xmlns:wpfconv="clr-namespace:WPFExtensions.Converters;assembly=WPFExtensions">
 

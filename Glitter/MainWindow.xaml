@@ -2,8 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         
-        xmlns:graphx="clr-namespace:GraphX;assembly=GraphX"
-        xmlns:graphxctrl="clr-namespace:GraphX.Controls;assembly=GraphX"
+        xmlns:graphxcommon="clr-namespace:GraphX;assembly=GraphX.Common"
+        xmlns:graphxlogic="clr-namespace:GraphX;assembly=GraphX.Logic"
+        xmlns:graphxctrl="clr-namespace:GraphX.Controls;assembly=GraphX.Controls"
         xmlns:zoom="clr-namespace:WPFExtensions.Controls;assembly=WPFExtensions" 
         xmlns:local="clr-namespace:Glitter"
         Title="MainWindow" Height="350" Width="525" WindowState="Maximized"
@@ -15,17 +16,17 @@
             </ResourceDictionary.MergedDictionaries>
 
             <ObjectDataProvider MethodName="GetValues" 
-                                ObjectType="{x:Type graphx:LayoutAlgorithmTypeEnum}" 
+                                ObjectType="{x:Type graphxcommon:LayoutAlgorithmTypeEnum}" 
                                 x:Key="LayoutTypes">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="graphx:LayoutAlgorithmTypeEnum" />
+                    <x:Type TypeName="graphxcommon:LayoutAlgorithmTypeEnum" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
         <graphxctrl:ZoomControl x:Name="gg_zoomctrl" Background="#ff656565">
-            <local:FileGraphLayout x:Name="gg_Area" DefaultLayoutAlgorithm="{Binding ElementName=Algo, Path=SelectedItem}" />
+            <local:FileGraphLayout x:Name="gg_Area" />
         </graphxctrl:ZoomControl>
         
         <ComboBox Width="100" 

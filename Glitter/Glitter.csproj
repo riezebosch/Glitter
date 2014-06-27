@@ -37,18 +37,25 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GraphX">
-      <HintPath>..\GraphX\GraphX.dll</HintPath>
+    <Reference Include="GraphX.Common, Version=2.0.2.0, Culture=neutral, PublicKeyToken=adb26e87ca554c82, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\GraphX.2.0.2\lib\net40\GraphX.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="GraphX.Controls, Version=2.0.2.0, Culture=neutral, PublicKeyToken=abeeef8557a9853f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\GraphX.2.0.2\lib\net40\GraphX.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="GraphX.Logic, Version=2.0.2.0, Culture=neutral, PublicKeyToken=e796769467c28ce2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\GraphX.2.0.2\lib\net40\GraphX.Logic.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DotNetZip.1.9.1.8\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="QuickGraph">
-      <HintPath>..\GraphX\QuickGraph.dll</HintPath>
-    </Reference>
-    <Reference Include="QuickGraph.Serialization">
-      <HintPath>..\GraphX\QuickGraph.Serialization.dll</HintPath>
+    <Reference Include="QuickGraph, Version=3.6.61114.0, Culture=neutral, PublicKeyToken=f3fb40175eec2af3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\QuickGraph.3.6.61119.7\lib\net4\QuickGraph.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -66,6 +73,10 @@
     <Reference Include="WPFExtensions, Version=1.0.3437.34043, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\WPFExtensions.1.0.0\lib\WPFExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="YAXLib, Version=2.13.0.0, Culture=neutral, PublicKeyToken=7cc39f8266ad1835, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\YAXLib.2.13\lib\YAXLib.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +104,7 @@
     <Compile Include="FileVertex.cs" />
     <Compile Include="GitObject.cs" />
     <Compile Include="IsNotNullConverter.cs" />
+    <Compile Include="LogicCore.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -27,14 +27,17 @@ namespace Glitter
         {
             InitializeComponent();
 
-            gg_Area.EdgeCurvingEnabled = true;
-            gg_Area.DefaultLayoutAlgorithm = GraphX.LayoutAlgorithmTypeEnum.FR;
-            gg_Area.DefaultOverlapRemovalAlgorithm = GraphX.OverlapRemovalAlgorithmTypeEnum.FSA;
-            gg_Area.DefaulEdgeRoutingAlgorithm = GraphX.EdgeRoutingAlgorithmTypeEnum.Bundling;
-            gg_Area.MoveAnimation = new GraphX.Animations.FadeMoveAnimation(TimeSpan.FromMilliseconds(500));
+            gg_Area.LogicCore = new LogicCore
+            {
+                EdgeCurvingEnabled = true,
+                DefaultEdgeRoutingAlgorithm = GraphX.EdgeRoutingAlgorithmTypeEnum.None,
+                DefaultOverlapRemovalAlgorithm = GraphX.OverlapRemovalAlgorithmTypeEnum.FSA,
+                DefaultLayoutAlgorithm = GraphX.LayoutAlgorithmTypeEnum.FR,
+            };
 
-            _model.PropertyChanged += (f1, f2) => gg_Area.GenerateGraph(_model.Graph, true);
-}
+            _model.PropertyChanged += (f1, f2) => gg_Area.GenerateGraph(true);
+            gg_Area.GenerateGraph(_model.Graph, true);
+        }
 
         private void allowdrop_DragEnter(object sender, DragEventArgs e)
         {
